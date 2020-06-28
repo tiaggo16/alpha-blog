@@ -2,3 +2,7 @@
 
 <p><strong>Title: </strong><%= @aarticle.title %></p>
 <p><strong>Description: </strong><%= @aarticle.description %></p>
+
+<p><%= link_to 'Edit', edit_aarticle_path(@aarticle) %></p>
+<p><%= link_to 'Delete', aarticle_path(@aarticle), method: :delete, data: {confirm: "Are you sure?"} %></p>
+<p><%= link_to 'Articles Index', aarticles_path %></p>

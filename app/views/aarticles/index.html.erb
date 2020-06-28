@@ -1,11 +1,12 @@
 <h1>Articles listing page</h1>
 
+<p><%= link_to 'Create New', new_aarticle_path %></p>
 <table>
  <thead>
     <tr>
       <th>Title</th>
       <th>Description</th>
-      <th>Actions</th>
+      <th colspan="3">Actions</th>
   </tr>
  </thead>
 
@@ -14,9 +15,12 @@
     <tr>
       <td><%= aarticle.title %></td>
       <td><%= aarticle.description %></td>
-      <td>Placeholder</td>
+      <td><%= link_to 'Show', aarticle_path(aarticle) %></td>      
+      <td><%= link_to 'Edit', edit_aarticle_path(aarticle) %></td>
+      <td><%= link_to 'Delete', aarticle_path(aarticle), method: :delete, data: {confirm: "Are you sure?"} %></td>
     </tr>
   <% end %>
  </tbody>
 
 </table>
+<p><%= link_to 'Home Page', root_path %></p>
