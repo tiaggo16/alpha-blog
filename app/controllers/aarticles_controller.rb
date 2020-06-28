@@ -9,13 +9,18 @@ class AarticlesController < ApplicationController
   end
   
   def new
-
+    @aarticle = Aarticle.new
   end
 
   def create
     @aarticle = Aarticle.new(params.require(:aarticle).permit(:title, :description))
-    @aarticle.save
-    redirect_to @aarticle
+    if @aarticle.save
+      flash[:notice] = "Article was created successfully."
+      redirect_to @aarticle      
+    else
+      render 'new'
+    end
+
   end
 
 end

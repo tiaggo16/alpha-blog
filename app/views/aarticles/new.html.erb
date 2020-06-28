@@ -1,5 +1,14 @@
 <h1>Create a new article</h1>
 
+<% if @aarticle.errors.any? %>
+  <h2>The following errors prevented the article from being saved</h2>
+  <ul>
+    <% @aarticle.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <%= form_with scope: :aarticle, url: aarticles_path, local: true do |f| %>
   <p>
     <%= f.label :title %><br/>
@@ -7,13 +16,12 @@
   </p>
 
   <p>
-  <%= f.label :description %><br/>
-  <%= f.text_area :description %>
+    <%= f.label :description %><br/>
+    <%= f.text_area :description %>
   </p>
 
   <p>
-  <%= f.submit %>
+    <%= f.submit %>
   </p>
 
-    
 <% end %>
