@@ -1,0 +1,211 @@
+[1mdiff --git a/Gemfile b/Gemfile[m
+[1mindex 61e4f24..099bcf6 100644[m
+[1m--- a/Gemfile[m
+[1m+++ b/Gemfile[m
+[36m@@ -20,7 +20,7 @@[m [mgem 'jbuilder', '~> 2.7'[m
+ # Use Redis adapter to run Action Cable in production[m
+ # gem 'redis', '~> 4.0'[m
+ # Use Active Model has_secure_password[m
+[31m-gem 'bcrypt', '~> 3.1.7'[m
+[32m+[m[32m# gem 'bcrypt', '~> 3.1.7'[m
+ [m
+ # Use Active Storage variant[m
+ # gem 'image_processing', '~> 1.2'[m
+[1mdiff --git a/Gemfile.lock b/Gemfile.lock[m
+[1mindex 35c0054..761f58a 100644[m
+[1m--- a/Gemfile.lock[m
+[1m+++ b/Gemfile.lock[m
+[36m@@ -58,7 +58,6 @@[m [mGEM[m
+       zeitwerk (~> 2.2)[m
+     addressable (2.7.0)[m
+       public_suffix (>= 2.0.2, < 5.0)[m
+[31m-    bcrypt (3.1.15)[m
+     bindex (0.8.1)[m
+     bootsnap (1.4.6)[m
+       msgpack (~> 1.0)[m
+[36m@@ -192,7 +191,6 @@[m [mPLATFORMS[m
+   x64-mingw32[m
+ [m
+ DEPENDENCIES[m
+[31m-  bcrypt (~> 3.1.7)[m
+   bootsnap (>= 1.4.2)[m
+   byebug[m
+   capybara (>= 2.15)[m
+[1mdiff --git a/app/controllers/users_controller.rb b/app/controllers/users_controller.rb[m
+[1mnew file mode 100644[m
+[1mindex 0000000..c5b7fca[m
+[1m--- /dev/null[m
+[1m+++ b/app/controllers/users_controller.rb[m
+[36m@@ -0,0 +1,21 @@[m
+[32m+[m[32mclass UsersController < ApplicationController[m
+[32m+[m
+[32m+[m[32m  def new[m
+[32m+[m[32m    @user = User.new[m
+[32m+[m[32m  end[m
+[32m+[m
+[32m+[m[32m  def create[m
+[32m+[m[32m    @user = User.new(user_params)[m
+[32m+[m[32m    if @user.save[m
+[32m+[m[32m      flash[:notice] = "Welcome to the Alpha Blog, you have sucessfully signup"[m[41m [m
+[32m+[m[32m    else[m
+[32m+[m[32m      render 'new'[m
+[32m+[m[32m    end[m[41m     [m
+[32m+[m[32m  end[m
+[32m+[m
+[32m+[m[32m  private[m
+[32m+[m[32m  def user_params[m
+[32m+[m[32m    params.require(:user).permit(:username, :email, :password)[m
+[32m+[m[32m  end[m
+[32m+[m
+[32m+[m[32mend[m
+\ No newline at end of file[m
+[1mdiff --git a/app/models/user.rb b/app/models/user.rb[m
+[1mindex 78904e5..6644cc6 100644[m
+[1m--- a/app/models/user.rb[m
+[1m+++ b/app/models/user.rb[m
+[36m@@ -8,6 +8,5 @@[m [mclass User < ApplicationRecord[m
+   validates :email, presence: true,[m
+                       uniqueness: { case_sensitive: false },[m
+                       length: { maximum: 105 },[m
+[31m-                      format: { with: VALID_EMAIL_REGEX } [m
+[31m-  has_secure_password                  [m
+[32m+[m[32m                      format: { with: VALID_EMAIL_REGEX }[m[41m                   [m
+ end[m
+\ No newline at end of file[m
+[1mdiff --git a/app/views/aarticles/_form.html.erb b/app/views/aarticles/_form.html.erb[m
+[1mindex 660edf6..3a98577 100644[m
+[1m--- a/app/views/aarticles/_form.html.erb[m
+[1m+++ b/app/views/aarticles/_form.html.erb[m
+[36m@@ -1,7 +1,7 @@[m
+ <div class="container">[m
+     <div class="row justify-content-center">[m
+     <div class="col-10">[m
+[31m-      <%= render 'shared/errors' %>[m
+[32m+[m[32m      <%= render 'shared/errors', obj: @aarticle %>[m
+       <%= form_with(model: @aarticle, class: "shadow p-3 mb-5 bg-info rounded", local: true)  do |f| %>[m
+         <div class="form-group row">[m
+           <%= f.label :title, class: "col-2 col-form-label" %>[m
+[1mdiff --git a/app/views/layouts/application.html.erb b/app/views/layouts/application.html.erb[m
+[1mindex 31ccaa3..e23a4bd 100644[m
+[1m--- a/app/views/layouts/application.html.erb[m
+[1m+++ b/app/views/layouts/application.html.erb[m
+[36m@@ -14,7 +14,7 @@[m
+     <div id="page-content">[m
+       <%= render 'layouts/messages' %>[m
+       <%= yield %>[m
+[32m+[m[32m      </div>[m
+       <%= render 'layouts/footer' %>[m
+[31m-    </div>[m
+   </body>[m
+ </html>[m
+[1mdiff --git a/app/views/shared/_errors.html.erb b/app/views/shared/_errors.html.erb[m
+[1mindex a2eea80..eb6b5b1 100644[m
+[1m--- a/app/views/shared/_errors.html.erb[m
+[1m+++ b/app/views/shared/_errors.html.erb[m
+[36m@@ -1,8 +1,8 @@[m
+[31m-<% if @aarticle.errors.any? %>[m
+[32m+[m[32m<% if obj.errors.any? %>[m
+   <div class="alert alert-danger alert-dismissible fade show" role="alert">[m
+     <h4 class="alert-heading">The following errors prevented the article from being saved</h4>[m
+     <ul>[m
+[31m-      <% @aarticle.errors.full_messages.each do |msg| %>[m
+[32m+[m[32m      <% obj.errors.full_messages.each do |msg| %>[m
+         <li><%= msg %></li>[m
+       <% end %>[m
+     </ul>[m
+[1mdiff --git a/app/views/users/_form.html.erb b/app/views/users/_form.html.erb[m
+[1mnew file mode 100644[m
+[1mindex 0000000..58b57bd[m
+[1m--- /dev/null[m
+[1m+++ b/app/views/users/_form.html.erb[m
+[36m@@ -0,0 +1,37 @@[m
+[32m+[m[32m<div class="container">[m
+[32m+[m[32m    <div class="row justify-content-center">[m
+[32m+[m[32m    <div class="col-10">[m
+[32m+[m[32m      <%= render 'shared/errors', obj: @user %>[m
+[32m+[m[32m      <%= form_with(model: @user, class: "shadow p-3 mb-5 bg-info rounded", local: true)  do |f| %>[m
+[32m+[m[32m        <div class="form-group row">[m
+[32m+[m[32m          <%= f.label :username, class: "col-2 col-form-label" %>[m
+[32m+[m[32m          <div class="col-10">[m
+[32m+[m[32m            <%= f.text_field :username, class: "form-control shadow rounded", placeholder: "Enter a username" %>[m
+[32m+[m[32m          </div>[m
+[32m+[m[32m        </div>[m
+[32m+[m
+[32m+[m[32m        <div class="form-group row">[m
+[32m+[m[32m          <%= f.label :email, class: "col-2 col-form-label" %>[m
+[32m+[m[32m          <div class="col-10">[m
+[32m+[m[32m            <%= f.email_field :email, class: "form-control shadow rounded", placeholder: "Enter your email adress" %>[m
+[32m+[m[32m          </div>[m
+[32m+[m[32m        </div>[m
+[32m+[m
+[32m+[m[32m        <div class="form-group row">[m
+[32m+[m[32m          <%= f.label :password, class: "col-2 col-form-label" %>[m
+[32m+[m[32m          <div class="col-10">[m
+[32m+[m[32m            <%= f.password_field :password, class: "form-control shadow rounded", placeholder: "Choose a password" %>[m
+[32m+[m[32m          </div>[m
+[32m+[m[32m        </div>[m
+[32m+[m
+[32m+[m[32m        <div class="form-group row justify-content-center">[m
+[32m+[m[32m          <%= f.submit class: "btn btn-outline-light btn lg" %>[m
+[32m+[m[32m        </div>[m
+[32m+[m
+[32m+[m[32m      <% end %>[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m    <div class="mb-3">[m
+[32m+[m[32m    <%= link_to "[ Cancel and return to articles listing ] ", aarticles_path, class:"Text-info" %>[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m</div>[m
+\ No newline at end of file[m
+[1mdiff --git a/app/views/users/new.html.erb b/app/views/users/new.html.erb[m
+[1mnew file mode 100644[m
+[1mindex 0000000..2b114ac[m
+[1m--- /dev/null[m
+[1m+++ b/app/views/users/new.html.erb[m
+[36m@@ -0,0 +1,2 @@[m
+[32m+[m[32m<h1 class="text-center mt-4">Sign up for Alpha Blog</h1>[m
+[32m+[m[32m<%= render 'form' %>[m
+\ No newline at end of file[m
+[1mdiff --git a/config/routes.rb b/config/routes.rb[m
+[1mindex afeb3e0..11963cd 100644[m
+[1m--- a/config/routes.rb[m
+[1m+++ b/config/routes.rb[m
+[36m@@ -2,4 +2,6 @@[m [mRails.application.routes.draw do[m
+   root 'pages#home'[m
+   get 'about', to: 'pages#about'[m
+   resources :aarticles[m
+[32m+[m[32m  get 'signup', to: 'users#new'[m
+[32m+[m[32m  resources :users, except: [:new][m
+ end[m
+[1mdiff --git a/db/migrate/20200726165550_add_password_digest_to_users.rb b/db/migrate/20200726165550_add_password_digest_to_users.rb[m
+[1mdeleted file mode 100644[m
+[1mindex dee4d5d..0000000[m
+[1m--- a/db/migrate/20200726165550_add_password_digest_to_users.rb[m
+[1m+++ /dev/null[m
+[36m@@ -1,5 +0,0 @@[m
+[31m-class AddPasswordDigestToUsers < ActiveRecord::Migration[6.0][m
+[31m-  def change[m
+[31m-    add_column :users, :password_digest, :string[m
+[31m-  end[m
+[31m-end[m
+[1mdiff --git a/db/schema.rb b/db/schema.rb[m
+[1mindex 8d9a575..4ca520a 100644[m
+[1m--- a/db/schema.rb[m
+[1m+++ b/db/schema.rb[m
+[36m@@ -10,7 +10,7 @@[m
+ #[m
+ # It's strongly recommended that you check this file into your version control system.[m
+ [m
+[31m-ActiveRecord::Schema.define(version: 2020_07_26_165550) do[m
+[32m+[m[32mActiveRecord::Schema.define(version: 2020_07_23_181521) do[m
+ [m
+   create_table "aarticles", force: :cascade do |t|[m
+     t.string "title"[m
+[36m@@ -28,7 +28,6 @@[m [mActiveRecord::Schema.define(version: 2020_07_26_165550) do[m
+     t.string "email"[m
+     t.datetime "created_at", precision: 6, null: false[m
+     t.datetime "updated_at", precision: 6, null: false[m
+[31m-    t.string "password_digest"[m
+   end[m
+ [m
+ end[m
