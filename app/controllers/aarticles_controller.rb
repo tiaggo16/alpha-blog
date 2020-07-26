@@ -14,6 +14,7 @@ class AarticlesController < ApplicationController
 
   def create
     @aarticle = Aarticle.new(aarticle_params)
+    @aarticle.user = User.first
     if @aarticle.save
       flash[:notice] = "Article was created successfully."
       redirect_to @aarticle      
