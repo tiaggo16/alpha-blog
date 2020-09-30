@@ -10,8 +10,10 @@
         </div>
         <div class="card-body">
           <div class="card-text text-left"><%= simple_format(@aarticle.description) %></div>
+          <% if logged_in? && @aarticle.user == current_user %>
           <%= link_to "Edit", edit_aarticle_path(@aarticle), class: "btn btn-outline-info" %>
           <%= link_to "Delete", aarticle_path(@aarticle), method: :delete, data: {confirm: "Are you sure?"}, class: "delete btn btn-outline-danger" %>
+          <% end %>
         </div>
         <div class="card-footer text-muted">
           <small>Created <%= time_ago_in_words(@aarticle.created_at) %> ago, 
